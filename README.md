@@ -34,7 +34,7 @@
 
 ### demo
 
-[demo](./vedio/xray23.gif)
+![](./pic/xray23.gif)
 
 ### Using packer.nvim
 
