@@ -34,13 +34,7 @@
 
 ### demo
 
-```HTML
-<video width="320" height="240" controls>
-    <source src="./vedio/xray23.mp4" type="video/mp4">
-</video>
-```
-
---
+[demo](./vedio/xray23.gif)
 
 ### Using packer.nvim
 
@@ -92,7 +86,7 @@ see 🔗[Telescope Default Mappings](https://github.com/nvim-telescope/telescope
 | `enter`        | switch to selected session                           |
 | `d`            | delete selected session                              |
 
-**neovim keybind**
+**neovim keybind**  
 if you want to set up neovim keymap you can do something like this
 
 ```lua
