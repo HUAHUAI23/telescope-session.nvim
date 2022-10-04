@@ -34,10 +34,13 @@
 
 ### demo
 
-<video id="video" controls="true" preload="none" poster="">
-      <source id="mp4" src="./vedio/xray23.mp4" type="video/mp4">
-</source>
----
+```HTML
+<video width="320" height="240" controls>
+    <source src="./vedio/xray23.mp4" type="video/mp4">
+</video>
+```
+
+--
 
 ### Using packer.nvim
 
