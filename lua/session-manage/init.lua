@@ -4,8 +4,7 @@ local conf = require("telescope.config").values
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local make_entry = require("telescope.make_entry")
-local previewers = require("telescope.previewers")
-local fn, api, loop = vim.fn, vim.api, vim.loop
+local fn, api, loop, lsp = vim.fn, vim.api, vim.loop, vim.lsp
 
 local Mansession = {}
 -- local mansessions = {}
@@ -35,17 +34,29 @@ function Mansession:start(opts)
 					"n",
 					"<cr>",
 					(function()
-						local load_session = function(prompt_bufnr)
+						local load_session = function()
 							actions.close(prompt_bufnr)
 							local selection = action_state.get_selected_entry()
-							-- save opened buffer and delete buffer
-							vim.api.nvim_cmd(vim.api.nvim_parse_cmd("wall", {}), {})
-							vim.api.nvim_cmd(vim.api.nvim_parse_cmd("%bwipeout", {}), {})
-							-- source session
-							vim.api.nvim_cmd(
-								vim.api.nvim_parse_cmd("source " .. opts.sessionDir .. "/" .. selection[1], {}),
-								{}
-							)
+							local current_spath = vim.v.this_session or ""
+							--save current session if exist
+							if current_spath ~= "" then
+								api.nvim_command("mksession! " .. fn.fnameescape(current_spath))
+							end
+							-- Stop all LSP clients first
+							for _, client in pairs(lsp.get_active_clients()) do
+								lsp.stop_client(client)
+							end
+							-- Scedule buffers cleanup to avoid callback issues and source the session
+							vim.schedule(function()
+								-- save opened buffer and delete buffer
+								api.nvim_cmd(vim.api.nvim_parse_cmd("wall", {}), {})
+								api.nvim_cmd(vim.api.nvim_parse_cmd("%bwipeout", {}), {})
+								-- source session
+								api.nvim_cmd(
+									vim.api.nvim_parse_cmd("source " .. opts.sessionDir .. "/" .. selection[1], {}),
+									{}
+								)
+							end)
 						end
 						return load_session
 					end)()
@@ -54,10 +65,16 @@ function Mansession:start(opts)
 					"n",
 					"d",
 					(function()
-						local delete_session = function(prompt_bufnr)
+						local delete_session = function()
 							actions.close(prompt_bufnr)
+							-- create trush dir under sessionDir
+							-- local trushDir = opts.sessionDir .. "/trush"
+							-- if fn.isdirectory(trushDir) == 0 then
+							-- 	fn.mkdir(trushDir, "p")
+							-- end
 							local selection = action_state.get_selected_entry()
-							-- delete session file
+							-- move session file to trush
+							-- vim.cmd([[!mv ]] .. opts.sessionDir .. "/" .. selection[1] .. " " .. trushDir)
 							vim.cmd([[!rm ]] .. opts.sessionDir .. "/" .. selection[1])
 						end
 						return delete_session
@@ -71,6 +88,7 @@ end
 
 function Mansession.session_save(opts)
 	opts = opts or {}
+	--  see https://github.com/glepnir/dashboard-nvim/blob/master/lua/dashboard/session.lua for details
 	local home = loop.os_homedir()
 	local sessionDir = opts.sessionDir or vim.fn.stdpath("data") .. "/vimSession"
 	local function isWindows()
@@ -110,6 +128,7 @@ function Mansession.session_save(opts)
 	vim.notify("\nSession " .. file_name .. " is now persistent")
 end
 
+-- deprecated
 -- mansessions.new = function(opts, defaults)
 -- 	opts = opts or {}
 -- 	defaults = defaults or {}
@@ -123,8 +142,9 @@ end
 -- 	return Mansession:new(results)
 -- end
 
--- local abc = Mansession:new({ sessionDir = vim.fn.stdpath("data") .. "/vimSession" })
--- abc:start({})
+-- Test
+local abc = Mansession:new({ sessionDir = vim.fn.stdpath("data") .. "/vimSession" })
+abc:start({})
 -- abc.session_save()
 
 -- print(abc.sessionDir)
