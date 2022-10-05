@@ -143,8 +143,8 @@ end
 -- end
 
 -- Test
-local abc = Mansession:new({ sessionDir = vim.fn.stdpath("data") .. "/vimSession" })
-abc:start({})
+-- local abc = Mansession:new({ sessionDir = vim.fn.stdpath("data") .. "/vimSession" })
+-- abc:start({})
 -- abc.session_save()
 
 -- print(abc.sessionDir)
