@@ -22,6 +22,7 @@ function Mansession:start(opts)
 	opts.cwd = opts.cwd or vim.fn.stdpath("data") .. "/vimSession"
 	opts.sessionDir = opts.sessionDir or vim.fn.stdpath("data") .. "/vimSession"
 	opts.find_command = opts.find_command or { "ls", opts.sessionDir }
+	-- make file icon (make_entry.gen_from_file(opts))
 	opts.entry_maker = opts.entry_maker or make_entry.gen_from_file(opts)
 	pickers
 		.new(opts, {
@@ -48,12 +49,12 @@ function Mansession:start(opts)
 							end
 							-- Scedule buffers cleanup to avoid callback issues and source the session
 							vim.schedule(function()
-								-- save opened buffer and delete buffer
-								api.nvim_cmd(vim.api.nvim_parse_cmd("wall", {}), {})
-								api.nvim_cmd(vim.api.nvim_parse_cmd("%bwipeout", {}), {})
+								-- save opened buffer and then delete buffer
+								api.nvim_cmd(api.nvim_parse_cmd("wall", {}), {})
+								api.nvim_cmd(api.nvim_parse_cmd("%bwipeout", {}), {})
 								-- source session
 								api.nvim_cmd(
-									vim.api.nvim_parse_cmd("source " .. opts.sessionDir .. "/" .. selection[1], {}),
+									api.nvim_parse_cmd("source " .. opts.sessionDir .. "/" .. selection[1], {}),
 									{}
 								)
 							end)
@@ -67,7 +68,7 @@ function Mansession:start(opts)
 					(function()
 						local delete_session = function()
 							actions.close(prompt_bufnr)
-							-- create trush dir under sessionDir
+							-- create trush dir in sessionDir
 							-- local trushDir = opts.sessionDir .. "/trush"
 							-- if fn.isdirectory(trushDir) == 0 then
 							-- 	fn.mkdir(trushDir, "p")
@@ -148,5 +149,5 @@ end
 -- abc.session_save()
 
 -- print(abc.sessionDir)
--- print(vim.pretty_print(abc.find_command))
+-- print(vim.pretty_print(abc.find_command)) -- null
 return Mansession
