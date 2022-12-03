@@ -21,7 +21,7 @@ function Mansession:start(opts)
 	opts = opts or {}
 	opts.cwd = opts.cwd or vim.fn.stdpath("data") .. "/vimSession"
 	opts.sessionDir = opts.sessionDir or vim.fn.stdpath("data") .. "/vimSession"
-	opts.find_command = opts.find_command or { "ls", opts.sessionDir }
+	opts.find_command = opts.find_command or { "ls" }
 	-- make file icon (make_entry.gen_from_file(opts))
 	opts.entry_maker = opts.entry_maker or make_entry.gen_from_file(opts)
 	pickers
