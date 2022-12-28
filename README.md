@@ -80,7 +80,7 @@ use("HUAHUAI23/telescope-session.nvim")
 #### telescope keybinds
 
 see 🔗[Telescope Default Mappings](https://github.com/nvim-telescope/telescope.nvim#default-mappings)  
-**telescope-session.nvim** provides two additional narmal mode keybinds
+**telescope-session.nvim** provides two additional normal mode keybinds
 | Mappings       | Action                                               |
 |----------------|------------------------------------------------------|
 | `enter`        | switch to selected session                           |
