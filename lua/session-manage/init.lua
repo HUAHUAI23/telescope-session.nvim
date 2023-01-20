@@ -76,7 +76,7 @@ function Mansession:start(opts)
 							local selection = action_state.get_selected_entry()
 							-- move session file to trush
 							-- vim.cmd([[!mv ]] .. opts.sessionDir .. "/" .. selection[1] .. " " .. trushDir)
-							vim.cmd([[!rm ]] .. opts.sessionDir .. "/" .. selection[1])
+							vim.cmd([[!rm ]] .. opts.sessionDir .. "/" .. "'" .. selection[1] .. "'")
 						end
 						return delete_session
 					end)()
@@ -99,6 +99,7 @@ function Mansession.session_save(opts)
 			return false
 		end
 	end
+
 	local function project_name()
 		local cwd = fn.resolve(fn.getcwd())
 		cwd = fn.substitute(cwd, "^" .. home .. "/", "", "")
@@ -111,6 +112,7 @@ function Mansession.session_save(opts)
 		cwd = fn.substitute(cwd, [[^\.]], "", "")
 		return cwd
 	end
+
 	if isWindows() then
 		-- overwrite sessionDir for Windows in this file
 		sessionDir = string.gsub(sessionDir, "/", "\\")
